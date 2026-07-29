@@ -177,7 +177,7 @@
 
   <div class="form-group">
     <label for="balance">starting deposit ($)</label>
-    <input type="number" id="balance" name="balance" placeholder="minimum $1000" min="1000" max="10000" required>
+    <input type="number" id="balance" name="balance" placeholder="minimum $1000" min="1" max="10000" required>
   </div>
 
   <button type="submit" id="submitbtn">create account</button>
@@ -213,7 +213,12 @@
         return;
       }
 
-      accountslist.innerHTML = accounts.map(acc => `
+      // Sort accounts in descending order by balance
+      const sortedAccounts = [...accounts].sort((a, b) => {
+        return Number(b.balance || 0) - Number(a.balance || 0);
+      });
+
+      accountslist.innerHTML = sortedAccounts.map(acc => `
         <div class="account-item">
           <div>
             <strong>${escapehtml(acc.name || '')}</strong>

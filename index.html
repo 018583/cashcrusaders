@@ -160,28 +160,28 @@
     </header>
 
     <div class="card">
-      <form id="accountform">
-        <div class="form-group">
-          <label for="name">account owner's name</label>
-          <input type="text" id="name" placeholder="e.g. vedanshi" required>
-        </div>
+      <form id="accountform" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+  <div class="form-group">
+    <label for="name">account owner's name</label>
+    <input type="text" id="name" name="name" placeholder="e.g. vedanshi" required>
+  </div>
 
-        <div class="form-group">
-          <label for="accounttype">account type</label>
-          <select id="accounttype">
-            <option value="savings">savings</option>
-            <option value="checking">checking</option>
-            <option value="vault">vault</option>
-          </select>
-        </div>
+  <div class="form-group">
+    <label for="accounttype">account type</label>
+    <select id="accounttype" name="accounttype">
+      <option value="savings">savings</option>
+      <option value="checking">checking</option>
+      <option value="vault">vault</option>
+    </select>
+  </div>
 
-        <div class="form-group">
-          <label for="balance">starting deposit ($)</label>
-          <input type="number" id="balance" placeholder="minimum 1000 rs." min="1000" max="2000" required>
-        </div>
+  <div class="form-group">
+    <label for="balance">starting deposit ($)</label>
+    <input type="number" id="balance" name="balance" placeholder="minimum 1000 rs." min="1000" max="2000" required>
+  </div>
 
-        <button type="submit" id="submitbtn">create account</button>
-      </form>
+  <button type="submit" id="submitbtn">create account</button>
+</form>
     </div>
 
     <div class="card">

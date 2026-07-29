@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>the cash crudsaders</title>
+  <title>the cash crusaders</title>
   <style>
     :root {
       --primary: #82c4c3;
@@ -156,7 +156,7 @@
   <div class="container">
     <header>
       <h1>cash crusaders!</h1>
-      <p>open an account </p>
+      <p>open an account</p>
     </header>
 
     <div class="card">
@@ -177,7 +177,7 @@
 
         <div class="form-group">
           <label for="balance">starting deposit ($)</label>
-          <input type="number" id="balance" placeholder="minimum 1000 rs." min="1000" max="2000"required>
+          <input type="number" id="balance" placeholder="minimum 1000 rs." min="1000" max="2000" required>
         </div>
 
         <button type="submit" id="submitbtn">create account</button>
@@ -191,7 +191,6 @@
   </div>
 
   <script>
-    // paste your deployed google web app url below
     const script_url = "https://api.sheetbest.com/sheets/cfbf6adc-ffdf-4f33-8af4-6c92597977dd";
 
     const form = document.getElementById('accountform');
@@ -204,7 +203,7 @@
         const data = await res.json();
         renderaccounts(data);
       } catch (err) {
-        accountslist.innerHTML = '<div class="loading">connect apps script url to load accounts!</div>';
+        accountslist.innerHTML = '<div class="loading">failed to load accounts! check sheet connection.</div>';
       }
     }
 
@@ -217,10 +216,10 @@
       accountslist.innerHTML = accounts.map(acc => `
         <div class="account-item">
           <div>
-            <strong>${escapehtml(acc.name)}</strong>
-            <span class="account-type">${escapehtml(acc.accounttype)}</span>
+            <strong>${escapehtml(acc.name || '')}</strong>
+            <span class="account-type">${escapehtml(acc.accounttype || '')}</span>
           </div>
-          <div class="balance">$${Number(acc.balance).toLocaleString()}</div>
+          <div class="balance">$${Number(acc.balance || 0).toLocaleString()}</div>
         </div>
       `).join('');
     }
@@ -239,13 +238,18 @@
       try {
         const res = await fetch(script_url, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(payload)
         });
-        const updatedaccounts = await res.json();
-        renderaccounts(updatedaccounts);
+
+        if (!res.ok) throw new Error("Post failed");
+
+        await loadaccounts();
         form.reset();
       } catch (err) {
-        alert("failed to save. make sure your script url is updated!");
+        alert("failed to save account. check your sheet setup!");
       } finally {
         submitbtn.innerText = "create account";
         submitbtn.disabled = false;
@@ -256,9 +260,8 @@
       return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    if (script_url !== "https://api.sheetbest.com/sheets/cfbf6adc-ffdf-4f33-8af4-6c92597977dd") {
-      loadaccounts();
-    }
+    // Initialize list when page opens
+    loadaccounts();
   </script>
 </body>
 </html>

@@ -176,8 +176,8 @@
         </div>
 
         <div class="form-group">
-          <label for="balance">starting deposit ($)</label>
-          <input type="number" id="balance" placeholder="minimum 1000 rs." min="1000" max="2000" required>
+          <label for="balance">starting deposit (₹)</label>
+          <input type="number" id="balance" placeholder="1000 - 10000 rs." min="1000" max="10000" required>
         </div>
 
         <button type="submit" id="submitbtn">create account</button>
@@ -191,77 +191,4 @@
   </div>
 
   <script>
-    const script_url = "https://api.sheetbest.com/sheets/a3dc924d-cc54-479e-a67e-705a0ce814cb";
-
-    const form = document.getElementById('accountform');
-    const submitbtn = document.getElementById('submitbtn');
-    const accountslist = document.getElementById('accountslist');
-
-    async function loadaccounts() {
-      try {
-        const res = await fetch(script_url);
-        const data = await res.json();
-        renderaccounts(data);
-      } catch (err) {
-        accountslist.innerHTML = '<div class="loading">failed to load accounts! check sheet connection.</div>';
-      }
-    }
-
-    function renderaccounts(accounts) {
-      if (!accounts || accounts.length === 0) {
-        accountslist.innerHTML = '<div class="loading">no accounts created yet!</div>';
-        return;
-      }
-
-      accountslist.innerHTML = accounts.map(acc => `
-        <div class="account-item">
-          <div>
-            <strong>${escapehtml(acc.name || '')}</strong>
-            <span class="account-type">${escapehtml(acc.accounttype || '')}</span>
-          </div>
-          <div class="balance">$${Number(acc.balance || 0).toLocaleString()}</div>
-        </div>
-      `).join('');
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submitbtn.innerText = "saving...";
-      submitbtn.disabled = true;
-
-      const payload = {
-        name: document.getElementById('name').value,
-        accounttype: document.getElementById('accounttype').value,
-        balance: document.getElementById('balance').value
-      };
-
-      try {
-        const res = await fetch(script_url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error("Post failed");
-
-        await loadaccounts();
-        form.reset();
-      } catch (err) {
-        alert("failed to save account. check your sheet setup!");
-      } finally {
-        submitbtn.innerText = "create account";
-        submitbtn.disabled = false;
-      }
-    });
-
-    function escapehtml(text) {
-      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    // Initialize list when page opens
-    loadaccounts();
-  </script>
-</body>
-</html>
+    const script_url = "

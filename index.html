@@ -191,4 +191,76 @@
   </div>
 
   <script>
-    const script_url = "
+    const script_url = "https://api.sheetbest.com/sheets/cfbf6adc-ffdf-4f33-8af4-6c92597977dd";
+
+    const form = document.getElementById('accountform');
+    const submitbtn = document.getElementById('submitbtn');
+    const accountslist = document.getElementById('accountslist');
+
+    async function loadaccounts() {
+      try {
+        const res = await fetch(script_url);
+        const data = await res.json();
+        renderaccounts(data);
+      } catch (err) {
+        accountslist.innerHTML = '<div class="loading">failed to load accounts! check sheet connection.</div>';
+      }
+    }
+
+    function renderaccounts(accounts) {
+      if (!accounts || accounts.length === 0) {
+        accountslist.innerHTML = '<div class="loading">no accounts created yet!</div>';
+        return;
+      }
+
+      accountslist.innerHTML = accounts.map(acc => `
+        <div class="account-item">
+          <div>
+            <strong>${escapehtml(acc.name || '')}</strong>
+            <span class="account-type">${escapehtml(acc.accounttype || '')}</span>
+          </div>
+          <div class="balance">₹${Number(acc.balance || 0).toLocaleString('en-IN')}</div>
+        </div>
+      `).join('');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitbtn.innerText = "saving...";
+      submitbtn.disabled = true;
+
+      const payload = {
+        name: document.getElementById('name').value,
+        accounttype: document.getElementById('accounttype').value,
+        balance: document.getElementById('balance').value
+      };
+
+      try {
+        const res = await fetch(script_url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("Post failed");
+
+        await loadaccounts();
+        form.reset();
+      } catch (err) {
+        alert("failed to save account. check your sheet setup!");
+      } finally {
+        submitbtn.innerText = "create account";
+        submitbtn.disabled = false;
+      }
+    });
+
+    function escapehtml(text) {
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    loadaccounts();
+  </script>
+</body>
+</html>
